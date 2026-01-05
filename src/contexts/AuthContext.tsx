@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const IDLE_TIME = 5 * 60 * 1000; // 5 minutes
 
       const startIdleTimer = () => {
-  if (idleTimer.current) clearTimeout(idleTimer.current);
+  if (idleTimer.current) clearTimeout(idleTimer.current); 
 
   idleTimer.current = setTimeout(() => {
     logout();
@@ -71,16 +71,28 @@ const resetIdleTimer = () => {
     });
 
     const jwtToken = res.data.token;
-    const userData = res.data.user;
+    // const userData = res.data.user;
 
 
 
 
-    localStorage.setItem("token", jwtToken);
-    localStorage.setItem("user", JSON.stringify(userData));
+    // localStorage.setItem("token", jwtToken);
+    // localStorage.setItem("user", JSON.stringify(userData));
 
-    setToken(jwtToken);
-    setUser(userData);
+    // setToken(jwtToken);
+    // setUser(userData);
+
+    const userData = {
+  ...res.data.user,
+  canViewRevenue: Boolean(res.data.user.canViewRevenue), // 🔥 FORCE BOOLEAN
+};
+
+localStorage.setItem("token", jwtToken);
+localStorage.setItem("user", JSON.stringify(userData));
+
+setToken(jwtToken);
+setUser(userData);
+
 
     setLoading(false);
     return true;
