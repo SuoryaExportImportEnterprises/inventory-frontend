@@ -62,9 +62,10 @@ useEffect(() => {
   path: "/admin/discrepancies",
 },
 
-    ...(user?.canViewRevenue
-    ? [{ name: "Revenue Board", icon: <IndianRupee />, path: "/admin/revenue-board" }]
-    : []),
+...(user?.role === "admin" && user?.canViewRevenue === true
+  ? [{ name: "Revenue Board", icon: <IndianRupee />, path: "/admin/revenue-board" }]
+  : [])
+,
     { name: "Inventory Summary", icon: <Boxes />, path: "/admin/inventory-summary" },
     { name: "Manage Dropdowns", icon: <ClipboardList />, path: "/admin/manage-dropdowns" },
   ];

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import API from "@/api/axiosInstance";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -37,6 +40,10 @@ export default function RevenueBoard() {
   // const ranges = ["1M", "3M", "6M", "1Y"];
   // const [activeRange, setActiveRange] = useState("6M");
 
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+
   const loadBoard = async () => {
     try {
       const res = await API.get<RevenueBoardResponse>(
@@ -50,9 +57,17 @@ export default function RevenueBoard() {
     }
   };
 
-  useEffect(() => {
-    loadBoard();
-  }, []);
+useEffect(() => {
+  // 🔐 FRONTEND GUARD
+  if (!user || user.role !== "admin" || user.canViewRevenue !== true) {
+    toast.error("You are not authorized to view Revenue Board");
+    navigate("/admin/dashboard");
+    return;
+  }
+
+  loadBoard();
+}, [user , navigate]);
+
 
 
   if (loading || !data) return <p className="p-6">Loading...</p>;
