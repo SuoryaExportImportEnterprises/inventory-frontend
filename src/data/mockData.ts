@@ -56,6 +56,7 @@ export const TRANSACTION_TYPES = [
   "WIP",
   "Final Item",
   "Packaging",
+  "Sampling"
 ];
 
 export const UNITS = ["Pieces", "Metre", "Kilos" , "Litres"];
