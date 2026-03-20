@@ -56,10 +56,12 @@ export const TRANSACTION_TYPES = [
   "WIP",
   "Final Item",
   "Packaging",
-  "Sampling"
+  "Sampling",
+  "Surplus Stock (Fresh)" ,
+  "Rejection Stock"
 ];
 
-export const UNITS = ["Pieces", "Metre", "Kilos" , "Litres"];
+export const UNITS = ["Pieces", "Metre", "Kilos" , "Litres" , "Box" , "Bundle" , "Line"];
 
 // Mock inventory data
 const getStoredInventory = () => {
