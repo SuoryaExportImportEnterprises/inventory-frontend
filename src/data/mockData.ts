@@ -61,7 +61,7 @@ export const TRANSACTION_TYPES = [
   "Rejection Stock"
 ];
 
-export const UNITS = ["Pieces", "Metre", "Kilos" , "Litres" , "Box" , "Bundle" , "Line"];
+export const UNITS = ["Pieces", "Metre", "Kilos" , "Litres" , "Box" , "Bundle" , "Line", "Cone", "Reel"];
 
 // Mock inventory data
 const getStoredInventory = () => {
