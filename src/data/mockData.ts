@@ -57,7 +57,7 @@ export const TRANSACTION_TYPES = [
   "Final Item",
   "Packaging",
   "Sampling",
-  "Surplus Stock (Fresh)" ,
+  "Surplus Stock" ,
   "Rejection Stock"
 ];
 
