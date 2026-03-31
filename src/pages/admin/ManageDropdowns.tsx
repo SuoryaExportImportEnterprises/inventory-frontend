@@ -309,6 +309,11 @@ const handleSubmitVendor = async () => {
       <SelectItem value="WIP">WIP</SelectItem>
       <SelectItem value="Final Item">Final Item</SelectItem>
       <SelectItem value="Packaging">Packaging</SelectItem>
+      <SelectItem value="Sampling">Sampling</SelectItem>
+      <SelectItem value="Surplus Stock">Surplus Stock</SelectItem>
+      <SelectItem value="Rejection Stock">Rejection Stock</SelectItem>
+
+
     </SelectContent>
   </Select>
 </div>
