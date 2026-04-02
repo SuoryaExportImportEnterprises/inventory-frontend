@@ -159,6 +159,7 @@ const toOk = toDate
                     <TableHead>Date of Outward</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Item</TableHead>
+                    <TableHead>Color</TableHead>
                     <TableHead>Vendor</TableHead>
                     <TableHead>Unit Of Measure</TableHead>
                     <TableHead>Quantity</TableHead>
@@ -195,6 +196,8 @@ const toOk = toDate
 
         {/* Item */}
         <TableCell>{t.item?.name || "—"}</TableCell>
+
+        <TableCell>{t.color || "—"}</TableCell>
 
         {/* Vendor */}
         <TableCell>

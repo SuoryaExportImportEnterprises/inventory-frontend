@@ -42,6 +42,7 @@ interface OutwardPayload {
   type: string;
   item: string;
   vendor: string;
+  color?: string;
   unit: string;
   quantity: number;
   outwardDate: string;
@@ -55,6 +56,7 @@ export default function OutwardNew() {
     type: "",
     vendor: "",
     item: "",
+    color: "",
     unit: "",
     quantity: 0,
     remarks: "",
@@ -184,6 +186,7 @@ if (outwardDate && new Date(outwardDate) > new Date()) {
   type: formData.type,
   item: formData.item,
   vendor: formData.vendor,
+  color: formData.color || undefined,
   unit: formData.unit,
   quantity,
   outwardDate,
@@ -310,6 +313,20 @@ await createOutward(payload);
                   </p>
                 )}
               </div>
+
+
+              {/* Color */}
+<div className="space-y-2">
+  <Label htmlFor="color">Color</Label>
+  <Input
+    id="color"
+    value={formData.color}
+    onChange={(e) =>
+      setFormData((prev) => ({ ...prev, color: e.target.value }))
+    }
+    placeholder="Enter color"
+  />
+</div>
 
               {/* Unit */}
               <div className="space-y-2">

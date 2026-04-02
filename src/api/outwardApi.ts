@@ -7,6 +7,7 @@ export interface OutwardType {
   quantity: number;
   unit: string;
   type: string;
+  color?: string;
   costPerUnitAtTime: number;
   totalCost: number;
   remarks?: string;

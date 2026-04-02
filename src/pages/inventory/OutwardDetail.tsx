@@ -106,6 +106,11 @@ export default function OutwardDetail() {
           </div>
 
           <div>
+            <p className="font-medium">Color</p>
+            <p>{data.color || "—"}</p>
+          </div>
+
+          <div>
             <p className="font-medium">Type</p>
             <p>{data.type || "—"}</p>
           </div>

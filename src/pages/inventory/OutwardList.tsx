@@ -60,6 +60,7 @@ export default function OutwardList() {
   const rows = filtered.map(o => ({
     ID: o._id,
     Item: o.item?.name ?? "",
+    Color: o.color ?? "", 
     Vendor: typeof o.vendor === "string" ? o.vendor : o.vendor?.name ?? "",
     Quantity: o.quantity,
     Unit: o.unit,
@@ -125,6 +126,7 @@ export default function OutwardList() {
                     <TableHead>Date of Outward</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Item</TableHead>
+                    <TableHead>Color</TableHead>
                     <TableHead>Vendor</TableHead>
                     <TableHead>Unit of Measure</TableHead>
                     <TableHead>Quantity</TableHead>
@@ -162,6 +164,7 @@ export default function OutwardList() {
                           {t._id}
                         </TableCell> */}
                         <TableCell>{t.item.name}</TableCell>
+                        <TableCell>{t.color || "—"}</TableCell>
                         <TableCell>
                           {typeof t.vendor === "string"
                             ? t.vendor
