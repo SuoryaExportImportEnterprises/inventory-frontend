@@ -7,6 +7,7 @@ import React, {
 } from "react";
 
 import API from "@/api/axiosInstance";
+import { useCallback } from "react";
 
 export type UserRole = "admin" | "inventory";
 
@@ -25,7 +26,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthContextType>({
   user: null,
   token: null,
   loading: false,
@@ -44,17 +45,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const IDLE_TIME = 5 * 60 * 1000; // 5 minutes
 
-      const startIdleTimer = () => {
-  if (idleTimer.current) clearTimeout(idleTimer.current); 
+const logout = useCallback(() => {
+  setToken(null);
+  setUser(null);
+  localStorage.clear();
+
+  if (idleTimer.current) clearTimeout(idleTimer.current);
+
+  window.location.href = "/login";
+}, []);
+
+const startIdleTimer = useCallback(() => {
+  if (idleTimer.current) clearTimeout(idleTimer.current);
+
+  console.log("START TIMER");
 
   idleTimer.current = setTimeout(() => {
     logout();
   }, IDLE_TIME);
-};
+}, [logout, IDLE_TIME]);
 
-const resetIdleTimer = () => {
+const resetIdleTimer = useCallback(() => {
+  console.log("RESET");
   startIdleTimer();
-};
+}, [startIdleTimer]);
 
   const [loading, setLoading] = useState(false);
 
@@ -103,35 +117,24 @@ setUser(userData);
 };
 
 
-
-const logout = () => {
-  setToken(null);
-  setUser(null);
-  localStorage.clear();
-
-  if (idleTimer.current) clearTimeout(idleTimer.current);
-
-  window.location.href = "/login";
-};
-
 useEffect(() => {
   if (!user || user.role !== "inventory") return;
 
   const events = ["mousemove", "keydown", "click", "scroll"];
 
-  events.forEach(event =>
+  events.forEach((event) =>
     window.addEventListener(event, resetIdleTimer)
   );
 
   startIdleTimer();
 
   return () => {
-    events.forEach(event =>
+    events.forEach((event) =>
       window.removeEventListener(event, resetIdleTimer)
     );
     if (idleTimer.current) clearTimeout(idleTimer.current);
   };
-}, [user]);
+}, [user, resetIdleTimer, startIdleTimer]);
 
   
 
@@ -142,4 +145,3 @@ useEffect(() => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
