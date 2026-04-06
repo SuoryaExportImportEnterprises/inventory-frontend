@@ -17,6 +17,7 @@ export interface InwardType {
 }
 
 export interface UpdateAdminInwardPayload {
+  quantityOnBill?: number,
   quantityReceived?: number;
   quantityRejected?: number;
   discrepancyRemarks?: string;

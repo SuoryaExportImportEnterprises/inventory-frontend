@@ -65,7 +65,7 @@ export default function InwardDetail() {
   const [inward, setInward] = useState<InwardDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const isAdmin = user?.role === "admin";
-
+  const [quantityOnBill, setQuantityOnBill] = useState(0);
 const [isEditMode, setIsEditMode] = useState(false);
 
 const [formData, setFormData] = useState({
@@ -75,6 +75,12 @@ const [formData, setFormData] = useState({
   rejectionRemarks: "",
   remarks: "",
 });
+
+useEffect(() => {
+  if (inward) {
+    setQuantityOnBill(inward.quantityOnBill || 0);
+  }
+}, [inward]);
 
   useEffect(() => {
   async function load() {
@@ -107,11 +113,13 @@ const [formData, setFormData] = useState({
   load();
 }, [id, user]);
 
+
 const handleSave = async () => {
   if (!inward) return;
 
   try {
     await updateAdminInward(inward._id, {
+      quantityOnBill,
       quantityReceived: formData.quantityReceived,
       quantityRejected: formData.quantityRejected,
       discrepancyRemarks: formData.discrepancyRemarks,
@@ -188,8 +196,22 @@ const formatShortDate = (d?: string | Date | null) => {
                   <Detail label="Unit" value={inward.unit} />
                   <Detail label="Color" value={inward.color || "—"} className="capitalize"/>
                   <div className="grid grid-cols-3 gap-3">
-                    <Detail label="Quantity (Bill)" value={inward.quantityOnBill} />
+
+                    {isEditMode ? (
+  <div>
+    <Label>Quantity (Bill)</Label>
+    <input
+      type="number"
+      className="w-full border rounded px-2 py-1"
+      value={quantityOnBill}
+      onChange={(e) => setQuantityOnBill(Number(e.target.value))}
+    />
+  </div>
+) : (
+  <Detail label="Quantity (Bill)" value={inward.quantityOnBill} />
+)}
                     {/* <Detail label="Qty (Received)" value={inward.quantityReceived} /> */}
+
                     {isEditMode ? (
   <div>
     <Label>Quantity (Received)</Label>
