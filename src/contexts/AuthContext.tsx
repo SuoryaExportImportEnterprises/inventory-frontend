@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     JSON.parse(localStorage.getItem("user") || "null")
   );
 
-  const idleTimer = useRef<NodeJS.Timeout | null>(null);
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const IDLE_TIME = 5 * 60 * 1000; // 5 minutes
 
       const startIdleTimer = () => {
@@ -53,7 +53,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 const resetIdleTimer = () => {
-  if (user?.role !== "inventory") return; // 🚫 admin excluded
   startIdleTimer();
 };
 
