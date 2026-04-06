@@ -127,8 +127,7 @@ useEffect(() => {
   getVendors()
     .then(res => {
       setVendors([
-        ...res.data,
-        { _id: "buyer", name: "Buyer" },
+        ...res.data
       ]);
     })
     .catch(() => toast.error("Failed to load vendors"));
