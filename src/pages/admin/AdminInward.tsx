@@ -28,6 +28,7 @@ interface RefWithName {
 
 interface AdminInwardType {
   _id: string;
+  
 
   item?: {
     name?: string;
@@ -47,6 +48,7 @@ interface AdminInwardType {
   quantityDiscrepancy?: number;
   quantityActual?: number;
 
+  billDate?: string;
   createdAt?: string;
 
   createdBy?: {
@@ -171,6 +173,8 @@ const inwardCsvData = sorted.map((t) => {
 
   return {
     // txnId: t._id,
+    dateOfReceiving: t.billDate ?? "",   // ⚠️ confirm field name
+dateOfCreation: t.createdAt ?? "",
     itemName: typeof t.item === "object" ? t.item?.name ?? "" : "",
     vendorName: typeof t.vendor === "object" ? t.vendor?.name ?? "" : "",
     type: t.type ?? "",
@@ -183,7 +187,6 @@ const inwardCsvData = sorted.map((t) => {
     enteredBy: t.createdBy?.username ?? "",
     // costPerUnit,
     // totalCost: costPerUnit * quantityActual,
-    date: t.createdAt ?? "",
   };
 });
 

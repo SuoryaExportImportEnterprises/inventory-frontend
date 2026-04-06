@@ -1,4 +1,6 @@
 export interface InwardCsvRow {
+  dateOfReceiving: string;
+  dateOfCreation: string;
   itemName: string;
   vendorName: string;
   type: string;
@@ -9,7 +11,6 @@ export interface InwardCsvRow {
   quantityDiscrepancy: number;
   quantityActual: number;
   enteredBy: string;
-  date: string;
 }
 
 
@@ -18,6 +19,8 @@ export function exportInwardCsv(data: InwardCsvRow[]) {
   if (!data || data.length === 0) return;
 
 const headers = [
+  "Date of Receiving",
+  "Date of Creation",
   "Item",
   "Vendor",
   "Type",
@@ -28,12 +31,18 @@ const headers = [
   "Item Missing",
   "Actual Quantity",
   "Entered By",
-  "Date",
 ];
 
 
   
 const rows = data.map((t) => [
+  t.dateOfReceiving
+  ? new Date(t.dateOfReceiving).toLocaleDateString("en-GB")
+  : "",
+
+t.dateOfCreation
+  ? new Date(t.dateOfCreation).toLocaleDateString("en-GB")
+  : "",
   t.itemName,
   t.vendorName,
   t.type,
@@ -44,7 +53,6 @@ const rows = data.map((t) => [
   t.quantityDiscrepancy,
   t.quantityActual,
   t.enteredBy,
-  new Date(t.date).toLocaleDateString(),
 ]);
 
 
