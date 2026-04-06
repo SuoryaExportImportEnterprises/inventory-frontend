@@ -7,7 +7,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { getMyInwardById, getAdminInwardById } from "@/api/inwardApi";
-import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { updateAdminInward } from "@/api/inwardApi";
 
 

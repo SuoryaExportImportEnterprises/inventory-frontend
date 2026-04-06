@@ -3,7 +3,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { useEffect, useState } from "react";
 import { fetchPendingDiscrepancyCount } from "@/api/discrepancyApi";
 

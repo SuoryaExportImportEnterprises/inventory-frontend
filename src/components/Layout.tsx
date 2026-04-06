@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { UserRole } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { Button } from '@/components/ui/button';
 import { Bell, LogOut, Package } from 'lucide-react';
 //import { getNotifications } from '@/data/mockData';

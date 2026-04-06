@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import API from "@/api/axiosInstance";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { useNavigate } from "react-router-dom";
 
 

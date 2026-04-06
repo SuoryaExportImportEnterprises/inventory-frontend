@@ -10,7 +10,8 @@ import {
   IndianRupee,
   Menu,
 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { Bell } from "lucide-react";
 import { fetchPendingDiscrepancyCount } from "@/api/discrepancyApi";
 
