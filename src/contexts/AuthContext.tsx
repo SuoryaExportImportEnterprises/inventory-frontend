@@ -48,27 +48,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 const logout = useCallback(() => {
   setToken(null);
   setUser(null);
-  localStorage.clear();
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 
   if (idleTimer.current) clearTimeout(idleTimer.current);
 
   window.location.href = "/login";
 }, []);
 
-const startIdleTimer = useCallback(() => {
-  if (idleTimer.current) clearTimeout(idleTimer.current);
+// const startIdleTimer = useCallback(() => {
+//   if (idleTimer.current) clearTimeout(idleTimer.current);
 
-  console.log("START TIMER");
+//   console.log("START TIMER");
+
+//   idleTimer.current = setTimeout(() => {
+//     logout();
+//   }, IDLE_TIME);
+// }, [logout, IDLE_TIME]);
+
+const resetIdleTimer = useCallback(() => {
+  if (idleTimer.current) clearTimeout(idleTimer.current);
 
   idleTimer.current = setTimeout(() => {
     logout();
   }, IDLE_TIME);
 }, [logout, IDLE_TIME]);
-
-const resetIdleTimer = useCallback(() => {
-  console.log("RESET");
-  startIdleTimer();
-}, [startIdleTimer]);
 
   const [loading, setLoading] = useState(false);
 
@@ -120,13 +124,13 @@ setUser(userData);
 useEffect(() => {
   if (!user || user.role !== "inventory") return;
 
-  const events = ["mousemove", "keydown", "click", "scroll"];
+  const events = ["mousemove", "mousedown", "keydown", "click", "touchstart", "scroll"];
 
   events.forEach((event) =>
     window.addEventListener(event, resetIdleTimer)
   );
 
-  startIdleTimer();
+  resetIdleTimer();
 
   return () => {
     events.forEach((event) =>
@@ -134,7 +138,7 @@ useEffect(() => {
     );
     if (idleTimer.current) clearTimeout(idleTimer.current);
   };
-}, [user, resetIdleTimer, startIdleTimer]);
+}, [user, resetIdleTimer]);
 
   
 
