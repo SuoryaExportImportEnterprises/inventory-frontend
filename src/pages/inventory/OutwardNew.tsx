@@ -58,7 +58,7 @@ export default function OutwardNew() {
     item: "",
     color: "",
     unit: "",
-    quantity: 0,
+    quantity: "",
     remarks: "",
   });
 
@@ -158,7 +158,7 @@ if (outwardDate && new Date(outwardDate) > new Date()) {
     if (!formData.vendor) newErrors.vendor = "Vendor is required";
     if (!formData.item) newErrors.item = "Item is required";
     if (!formData.unit) newErrors.unit = "Unit is required";
-    if (!formData.quantity || formData.quantity <= 0)
+    if (!formData.quantity || Number(formData.quantity) <= 0)
       newErrors.quantity = "Quantity must be greater than 0";
 
     setErrors(newErrors);
@@ -172,7 +172,7 @@ if (outwardDate && new Date(outwardDate) > new Date()) {
       return;
     }
 
-    const quantity = formData.quantity;
+    const quantity = Number(formData.quantity);
 
     // Stock check
     if (quantity > currentStock) {
@@ -354,12 +354,13 @@ await createOutward(payload);
                   id="quantity"
                   type="number"
                   value={formData.quantity}
-                  onChange={(e) => setFormData(prev => ({...prev, quantity: Number(e.target.value),}))}
+                  placeholder="Enter quantity"
+                  onChange={(e) => setFormData(prev => ({...prev, quantity: e.target.value,}))}
                   className={errors.quantity ? "border-destructive" : ""}
                 />
                 {errors.quantity && <p className="text-sm text-destructive">{errors.quantity}</p>}
 
-                {formData.quantity && formData.quantity > currentStock && (
+                {Number(formData.quantity || 0) > currentStock && (
                   <Alert variant="destructive">
                     <AlertTriangle className="h-4 w-4" />
                     <AlertDescription>
@@ -386,7 +387,10 @@ await createOutward(payload);
               <Button
                 onClick={handleSubmit}
                 className="flex-1 h-14 font-extrabold text-lg"
-                disabled={formData.quantity && formData.quantity > currentStock}
+                disabled={
+                  formData.quantity &&
+                  Number(formData.quantity) > currentStock
+                }
               >
                 {/* <Send className="h-4 w-4 mr-2" /> */}
                 SUBMIT
