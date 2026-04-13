@@ -11,6 +11,9 @@ import { UserRole } from "@/contexts/AuthContext";
 import { useAuth } from "@/contexts/useAuth";
 import { updateAdminInward } from "@/api/inwardApi";
 
+import { SearchableSelect } from '@/components/SearchableSelect';
+import { getActiveVendors } from '@/api/vendorApi';
+
 import {
   Select,
   SelectContent,
@@ -19,7 +22,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { TRANSACTION_TYPES } from '@/data/mockData';
+import { UNITS } from '@/data/mockData';
+
 
 
 
@@ -87,6 +91,17 @@ const [formData, setFormData] = useState({
   remarks: "",
 });
 
+const [vendors, setVendors] = useState([]);
+
+
+useEffect(() => {
+  getActiveVendors()
+    .then(res => setVendors(res.data))
+    .catch(() => toast.error("Failed to load vendors"));
+}, []);
+
+
+
 useEffect(() => {
   if (inward) {
     setQuantityOnBill(inward.quantityOnBill || 0);
@@ -136,11 +151,13 @@ const handleSave = async () => {
       discrepancyRemarks: formData.discrepancyRemarks,
       rejectionRemarks: formData.rejectionRemarks,
       remarks: formData.remarks,
-      type: inward.type,
       billDate:
       typeof inward.billDate === "string"
       ? inward.billDate
       : inward.billDate?.toISOString(),
+      vendor: inward.vendor?._id,
+      unit: inward.unit,
+      color: inward.color,
     });
 
     toast.success("Inward entry updated successfully");
@@ -230,45 +247,102 @@ const formatShortDate = (d?: string | Date | null) => {
 
 
 
-                  {/* <Detail label="Type" value={inward.type} /> */}
-
-                  {isEditMode ? (
-  <div>
-    <Label>Type</Label>
-
-    <Select
-      value={inward.type || ""}
-      onValueChange={(val) =>
-        setInward(prev =>
-          prev ? { ...prev, type: val, item: null } : prev // 🔥 RESET ITEM
-        )
-      }
-    >
-      <SelectTrigger>
-        <SelectValue placeholder="Select type" />
-      </SelectTrigger>
-
-      <SelectContent>
-        {TRANSACTION_TYPES.map(t => (
-          <SelectItem key={t} value={t}>
-            {t}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  </div>
-) : (
-  <Detail label="Type" value={inward.type} />
-)}
+                  <Detail label="Type" value={inward.type} />
 
 
 
 
 
                   <Detail label="Item" value={inward.item?.name} />
-                  <Detail label="Vendor" value={inward.vendor?.name} />
-                  <Detail label="Unit" value={inward.unit} />
-                  <Detail label="Color" value={inward.color || "—"} className="capitalize"/>
+
+
+
+
+                  {/* <Detail label="Vendor" value={inward.vendor?.name} /> */}
+
+                  {isEditMode ? (
+  <div>
+    <Label>Vendor</Label>
+
+    <SearchableSelect
+      options={vendors.map(v => ({
+        label: v.name,
+        value: v._id,
+      }))}
+      value={inward.vendor?._id || ""}
+      onChange={(val) =>
+        setInward(prev =>
+          prev ? { ...prev, vendor: { _id: val } } : prev
+        )
+      }
+    />
+  </div>
+) : (
+  <Detail label="Vendor" value={inward.vendor?.name} />
+)}
+
+
+                  {/* <Detail label="Unit" value={inward.unit} /> */}
+
+
+
+                  {isEditMode ? (
+  <div>
+    <Label>Unit</Label>
+
+    <Select
+      value={inward.unit || ""}
+      onValueChange={(val) =>
+        setInward(prev =>
+          prev ? { ...prev, unit: val } : prev
+        )
+      }
+    >
+      <SelectTrigger>
+        <SelectValue placeholder="Select unit" />
+      </SelectTrigger>
+
+      <SelectContent>
+        {UNITS.map(u => (
+          <SelectItem key={u} value={u}>
+            {u}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+) : (
+  <Detail label="Unit" value={inward.unit} />
+)}
+
+
+
+                  {/* <Detail label="Color" value={inward.color || "—"} className="capitalize"/> */}
+
+
+
+                  {isEditMode ? (
+  <div>
+    <Label>Color</Label>
+
+    <input
+      type="text"
+      className="w-full border rounded px-2 py-1"
+      value={inward.color || ""}
+      onChange={(e) =>
+        setInward(prev =>
+          prev ? { ...prev, color: e.target.value } : prev
+        )
+      }
+    />
+  </div>
+) : (
+  <Detail label="Color" value={inward.color || "—"} />
+)}
+
+
+
+
                   <div className="grid grid-cols-3 gap-3">
 
                     {isEditMode ? (

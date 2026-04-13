@@ -25,10 +25,8 @@ export interface UpdateAdminInwardPayload {
   remarks?: string;
 
   billDate?: string;
-  type?: string;
   unit?: string;
   color?: string;
-  item?: string;
   vendor?: string;
 }
 
