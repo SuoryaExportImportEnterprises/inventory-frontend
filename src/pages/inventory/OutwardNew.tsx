@@ -264,8 +264,8 @@ await createOutward(payload);
               <div className="space-y-2">
                 <Label htmlFor="vendor">Vendor / Buyer *</Label>
                 <SearchableSelect
-                  options={vendors.map((v) => ({ label: v.name, value: v._id }))}
-                  value={formData.vendor}
+                  options={vendors.map((v) => ({ label: v.name, value: String(v._id) }))}
+                  value={String(formData.vendor)}
                   onChange={(value) => setFormData((prev) => ({ ...prev, vendor: value }))}
                   placeholder="Select vendor or Buyer"
                   className={errors.vendor ? "border-destructive" : ""}

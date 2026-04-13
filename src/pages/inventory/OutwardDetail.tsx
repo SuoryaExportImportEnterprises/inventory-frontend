@@ -13,6 +13,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { OutwardType } from "@/api/outwardApi";
 import { adminUpdateOutward } from "@/api/outwardApi";
 
+import { SearchableSelect } from '@/components/SearchableSelect';
+import { getVendors } from '@/api/vendorApi';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+import { UNITS } from '@/data/mockData';
+
 
 export default function OutwardDetail() {
   const { id } = useParams();
@@ -25,7 +38,11 @@ export default function OutwardDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [editQuantity, setEditQuantity] = useState(0);
   const [editRemarks, setEditRemarks] = useState("");
-
+  const [vendors, setVendors] = useState([]);
+const [editVendor, setEditVendor] = useState("");
+const [editUnit, setEditUnit] = useState("");
+const [editColor, setEditColor] = useState("");
+const [editDate, setEditDate] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -38,8 +55,23 @@ export default function OutwardDetail() {
           res = await getMyOutwardById(id!);
 
         setData(res.data);
+        setEditVendor(
+          typeof res.data.vendor === "object"
+          ? res.data.vendor._id
+          : res.data.vendor || ""
+        );
+        
+        setEditUnit(res.data.unit || "");
+        setEditColor(res.data.color || "");
+        setEditDate(
+          res.data.outwardDate
+          ? new Date(res.data.outwardDate).toISOString().split("T")[0]
+          : ""
+        );
+
         setEditQuantity(res.data.quantity);
         setEditRemarks(res.data.remarks || "");
+
 
       } catch {
         toast.error("Failed to load outward entry");
@@ -49,6 +81,13 @@ export default function OutwardDetail() {
     }
     load();
   }, [id]);
+
+
+  useEffect(() => {
+  getVendors()
+    .then(res => setVendors(res.data))
+    .catch(() => toast.error("Failed to load vendors"));
+}, []);
 
   if (loading)
     return (
@@ -94,11 +133,24 @@ export default function OutwardDetail() {
         <CardContent className="grid md:grid-cols-2 gap-6">
           <div>
   <p className="font-medium">Date of Outward</p>
+  {/* <p>
+    {data.outwardDate
+      ? new Date(data.outwardDate).toLocaleDateString("en-GB")
+      : "—"}
+  </p> */}
+  {isEditing ? (
+  <Input
+    type="date"
+    value={editDate}
+    onChange={(e) => setEditDate(e.target.value)}
+  />
+) : (
   <p>
     {data.outwardDate
       ? new Date(data.outwardDate).toLocaleDateString("en-GB")
       : "—"}
   </p>
+)}
 </div>
 
           <div>
@@ -108,7 +160,15 @@ export default function OutwardDetail() {
 
           <div>
             <p className="font-medium">Color</p>
-            <p>{data.color || "—"}</p>
+            {/* <p>{data.color || "—"}</p> */}
+            {isEditing ? (
+  <Input
+    value={editColor}
+    onChange={(e) => setEditColor(e.target.value)}
+  />
+) : (
+  <p>{data.color || "—"}</p>
+)}
           </div>
 
           <div>
@@ -119,11 +179,28 @@ export default function OutwardDetail() {
 
           <div>
   <p className="font-medium">Vendor</p>
+  {/* <p>
+    {typeof data.vendor === "object"
+      ? data.vendor.name
+      : data.vendor || "—"}
+  </p> */}
+
+  {isEditing ? (
+  <SearchableSelect
+    options={vendors.map(v => ({
+      label: v.name,
+      value: String(v._id),
+    }))}
+    value={String(editVendor)}
+    onChange={(val) => setEditVendor(val)}
+  />
+) : (
   <p>
     {typeof data.vendor === "object"
       ? data.vendor.name
       : data.vendor || "—"}
   </p>
+)}
 </div>
 
 
@@ -152,7 +229,23 @@ export default function OutwardDetail() {
 
           <div>
             <p className="font-medium">Unit Of Measure</p>
-            <p>{data.unit || "—"}</p>
+            {/* <p>{data.unit || "—"}</p> */}
+            {isEditing ? (
+  <Select value={editUnit} onValueChange={setEditUnit}>
+    <SelectTrigger>
+      <SelectValue />
+    </SelectTrigger>
+    <SelectContent>
+      {UNITS.map(u => (
+        <SelectItem key={u} value={u}>
+          {u}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+) : (
+  <p>{data.unit || "—"}</p>
+)}
           </div>
 
           {/* <div>
@@ -213,6 +306,22 @@ export default function OutwardDetail() {
         // reset changes
         setEditQuantity(data.quantity);
         setEditRemarks(data.remarks || "");
+
+        setEditVendor(
+    typeof data.vendor === "object"
+      ? data.vendor._id
+      : data.vendor || ""
+  );
+
+  setEditUnit(data.unit || "");
+  setEditColor(data.color || "");
+  setEditDate(
+    data.outwardDate
+      ? new Date(data.outwardDate).toISOString().split("T")[0]
+      : ""
+  );
+
+
         setIsEditing(false);
       }}
     >
@@ -225,6 +334,10 @@ export default function OutwardDetail() {
           const res = await adminUpdateOutward(data._id, {
             quantity: editQuantity,
             remarks: editRemarks,
+vendor: editVendor || undefined,
+unit: editUnit || undefined,
+color: editColor || undefined,
+outwardDate: editDate || undefined,
           });
 
           setData(res.data); // 🔥 IMPORTANT

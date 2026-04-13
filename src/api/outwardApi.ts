@@ -16,6 +16,17 @@ export interface OutwardType {
   createdBy?: { username: string; role: string };
 }
 
+export interface UpdateOutwardPayload {
+  quantity?: number;
+  remarks?: string;
+
+  // 👇 ADD THESE
+  vendor?: string;
+  unit?: string;
+  color?: string;
+  outwardDate?: string;
+}
+
 // INVENTORY
 export const getMyOutwards = () => API.get("/outwards/my");
 export const getMyOutwardById = (id: string) =>
@@ -32,7 +43,7 @@ export const createOutward = (data: Partial<OutwardType>) =>
 
 export const adminUpdateOutward = (
   id: string,
-  data: { quantity?: number; remarks?: string }
+  data: UpdateOutwardPayload
 ) =>
   API.patch(`/outwards/admin/${id}`, data);
 
