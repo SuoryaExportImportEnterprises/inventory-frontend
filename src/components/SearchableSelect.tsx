@@ -63,7 +63,7 @@ export function SearchableSelect({
               {options.map((opt) => (
                 <CommandItem
                 key={opt.value}
-                value={opt.value}
+                value={opt.label}
                   onSelect={() => {
                     onChange(opt.value);
                     setOpen(false);
