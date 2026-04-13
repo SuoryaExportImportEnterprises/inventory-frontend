@@ -126,6 +126,10 @@ const handleSave = async () => {
       discrepancyRemarks: formData.discrepancyRemarks,
       rejectionRemarks: formData.rejectionRemarks,
       remarks: formData.remarks,
+      billDate:
+      typeof inward.billDate === "string"
+      ? inward.billDate
+      : inward.billDate?.toISOString(),
     });
 
     toast.success("Inward entry updated successfully");
@@ -190,7 +194,28 @@ const formatShortDate = (d?: string | Date | null) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <div className="space-y-4">
-                  <Detail label="Date of Receiving" value={formatShortDate(inward.billDate)} />
+                  {/* <Detail label="Date of Receiving" value={formatShortDate(inward.billDate)} /> */}
+                  {isEditMode ? (
+                    <div>
+                      <Label>Date of Receiving</Label>
+                      <input
+                      type="date"
+                      className="w-full border rounded px-2 py-1"
+                      value={
+                        inward.billDate
+                        ? new Date(inward.billDate).toISOString().split("T")[0]
+                        : ""
+                      }
+                      onChange={(e) =>
+                        setInward(prev =>
+                          prev ? { ...prev, billDate: e.target.value } : prev
+                        )
+                        }
+                        />
+                        </div>
+                        ) : (
+                        <Detail label="Date of Receiving" value={formatShortDate(inward.billDate)} />
+                        )}
                   <Detail label="Type" value={inward.type} />
                   <Detail label="Item" value={inward.item?.name} />
                   <Detail label="Vendor" value={inward.vendor?.name} />

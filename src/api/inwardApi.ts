@@ -23,6 +23,13 @@ export interface UpdateAdminInwardPayload {
   discrepancyRemarks?: string;
   rejectionRemarks?: string;
   remarks?: string;
+
+  billDate?: string;
+  type?: string;
+  unit?: string;
+  color?: string;
+  item?: string;
+  vendor?: string;
 }
 
 
