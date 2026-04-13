@@ -11,6 +11,16 @@ import { UserRole } from "@/contexts/AuthContext";
 import { useAuth } from "@/contexts/useAuth";
 import { updateAdminInward } from "@/api/inwardApi";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+import { TRANSACTION_TYPES } from '@/data/mockData';
+
 
 
 interface UserRef {
@@ -126,6 +136,7 @@ const handleSave = async () => {
       discrepancyRemarks: formData.discrepancyRemarks,
       rejectionRemarks: formData.rejectionRemarks,
       remarks: formData.remarks,
+      type: inward.type,
       billDate:
       typeof inward.billDate === "string"
       ? inward.billDate
@@ -216,7 +227,44 @@ const formatShortDate = (d?: string | Date | null) => {
                         ) : (
                         <Detail label="Date of Receiving" value={formatShortDate(inward.billDate)} />
                         )}
-                  <Detail label="Type" value={inward.type} />
+
+
+
+                  {/* <Detail label="Type" value={inward.type} /> */}
+
+                  {isEditMode ? (
+  <div>
+    <Label>Type</Label>
+
+    <Select
+      value={inward.type || ""}
+      onValueChange={(val) =>
+        setInward(prev =>
+          prev ? { ...prev, type: val, item: null } : prev // 🔥 RESET ITEM
+        )
+      }
+    >
+      <SelectTrigger>
+        <SelectValue placeholder="Select type" />
+      </SelectTrigger>
+
+      <SelectContent>
+        {TRANSACTION_TYPES.map(t => (
+          <SelectItem key={t} value={t}>
+            {t}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+) : (
+  <Detail label="Type" value={inward.type} />
+)}
+
+
+
+
+
                   <Detail label="Item" value={inward.item?.name} />
                   <Detail label="Vendor" value={inward.vendor?.name} />
                   <Detail label="Unit" value={inward.unit} />
