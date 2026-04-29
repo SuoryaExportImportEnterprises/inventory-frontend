@@ -54,10 +54,10 @@ interface InwardFormData {
   vendor: string;
   unit: string;
   color: string;
-  quantityOnBill: number;
-  quantityReceived: number;
+  quantityOnBill: number | '';
+  quantityReceived: number | '';
   // quantityDiscrepancy: number;
-  quantityRejected: number;
+  quantityRejected: number | '';
 
   billDate: string;
   isCounted: boolean;
@@ -80,10 +80,10 @@ export default function InwardNew() {
     vendor: '',
     unit: '',
     color: '', 
-    quantityOnBill: 0,
-    quantityReceived: 0,
+    quantityOnBill: '',
+    quantityReceived: '',
     // quantityDiscrepancy: 0,
-    quantityRejected: 0,
+    quantityRejected: '',
 
     billDate: '',
     isCounted: false,
@@ -127,16 +127,20 @@ useEffect(() => {
 
 const quantityDiscrepancy = Math.max(
   0,
-  formData.quantityOnBill - formData.quantityReceived
+  // formData.quantityOnBill - formData.quantityReceived
+  Number(formData.quantityOnBill || 0) - Number(formData.quantityReceived || 0)
 );
 
   /* ---------- DERIVED VALUE ---------- */
 const netAvailable =
   Math.max(
     0,
-    formData.quantityOnBill -
+    // formData.quantityOnBill -
+    // quantityDiscrepancy -
+    // formData.quantityRejected
+    Number(formData.quantityOnBill || 0) - 
     quantityDiscrepancy -
-    formData.quantityRejected
+    Number(formData.quantityRejected || 0)
   );
 
 
@@ -149,14 +153,22 @@ const netAvailable =
     if (!formData.item) e.item = 'Item is required';
     if (!formData.vendor) e.vendor = 'Vendor is required';
     if (!formData.unit) e.unit = 'Unit of measure is required';
-    if (formData.quantityOnBill <= 0)
+    // if (formData.quantityOnBill <= 0)
+    if (!formData.quantityOnBill || Number(formData.quantityOnBill) <= 0)
       e.quantityOnBill = 'Enter valid quantity';
-    if (formData.quantityReceived < 0)
+    // if (formData.quantityReceived < 0)
+    if (Number(formData.quantityReceived || 0) < 0)
       e.quantityReceived = 'Invalid quantity';
-    if (formData.quantityRejected < 0)
+    // if (formData.quantityRejected < 0)
+    if (Number(formData.quantityRejected || 0) < 0)
       e.quantityRejected = 'Invalid quantity';
 
-    if (formData.quantityRejected > formData.quantityReceived) {
+    // if (formData.quantityRejected > formData.quantityReceived) 
+    if (
+      Number(formData.quantityRejected || 0) >
+      Number(formData.quantityReceived || 0)
+    )
+    {
       e.quantityRejected = 'Rejected cannot exceed received';
     }
 
@@ -168,7 +180,7 @@ const netAvailable =
     }
 
     if (
-      formData.quantityRejected > 0 &&
+      Number(formData.quantityRejected || 0) > 0 &&
       !formData.rejectionRemarks
     ) {
       e.rejectionRemarks = 'Remarks required';
@@ -183,7 +195,12 @@ const netAvailable =
   const handleSubmit = () => {
     if (!validate()) return;
 
-    if (formData.quantityReceived > formData.quantityOnBill) {
+    // if (formData.quantityReceived > formData.quantityOnBill) 
+    if (
+      Number(formData.quantityReceived || 0) >
+      Number(formData.quantityOnBill || 0)
+    )
+    {
       setShowReceivedExceedsBillModal(true);
       return;
     }
@@ -201,9 +218,12 @@ const submit = async () => {
   unit: formData.unit,
   color: formData.color,
 
-  quantityOnBill: formData.quantityOnBill,
-  quantityReceived: formData.quantityReceived,
-  quantityRejected: formData.quantityRejected,
+  // quantityOnBill: formData.quantityOnBill,
+  // quantityReceived: formData.quantityReceived,
+  // quantityRejected: formData.quantityRejected,
+  quantityOnBill: Number(formData.quantityOnBill || 0),
+  quantityReceived: Number(formData.quantityReceived || 0),
+  quantityRejected: Number(formData.quantityRejected || 0),
   quantityDiscrepancy: quantityDiscrepancy,
 
   discrepancyRemarks: formData.discrepancyRemarks,
@@ -348,18 +368,17 @@ const submit = async () => {
 
             {/* Unit */}
             <div className="space-y-2">
-  <Label>Unit Of Measure *</Label>
-
-  <Select
-    value={formData.unit}
-    disabled={!formData.isCounted}
-    onValueChange={v =>
-      setFormData(prev => ({ ...prev, unit: v }))
-    }
-  >
-    <SelectTrigger className={errors.unit ? 'border-destructive' : ''}>
-      <SelectValue placeholder="Select unit" />
-    </SelectTrigger>
+              <Label>Unit Of Measure *</Label>
+              <Select
+              value={formData.unit}
+              disabled={!formData.isCounted}
+              onValueChange={v =>
+                setFormData(prev => ({ ...prev, unit: v }))
+              }
+              >
+                <SelectTrigger className={errors.unit ? 'border-destructive' : ''}>
+                  <SelectValue placeholder="Select unit" />
+                </SelectTrigger>
 
     <SelectContent>
       {UNITS.map(u => (
@@ -401,11 +420,15 @@ const submit = async () => {
             <Input
               type="number"
               value={formData.quantityOnBill}
-               disabled={!formData.isCounted}
+              onWheel={(e) => e.currentTarget.blur()}
+
+              placeholder="Enter quantity"
+              disabled={!formData.isCounted}
               onChange={e =>
                 setFormData(prev => ({
                   ...prev,
-                  quantityOnBill: Number(e.target.value),
+                  // quantityOnBill: Number(e.target.value),
+                  quantityOnBill: e.target.value === '' ? '' : Number(e.target.value),
                 }))
               }
             />
@@ -416,11 +439,14 @@ const submit = async () => {
             <Input
               type="number"
               value={formData.quantityReceived}
-               disabled={!formData.isCounted}
+              onWheel={(e) => e.currentTarget.blur()}
+              placeholder="Enter quantity"
+              disabled={!formData.isCounted}
               onChange={e =>
                 setFormData(prev => ({
                   ...prev,
-                  quantityReceived: Number(e.target.value),
+                  // quantityReceived: Number(e.target.value),
+                  quantityReceived: e.target.value === '' ? '' : Number(e.target.value),
                 }))
               }
             />
@@ -435,12 +461,15 @@ const submit = async () => {
             <Label>Rejected</Label>
             <Input
               type="number"
+              onWheel={(e) => e.currentTarget.blur()}
               value={formData.quantityRejected}
-               disabled={!formData.isCounted}
+              placeholder="Enter quantity"
+              disabled={!formData.isCounted}
               onChange={e =>
                 setFormData(prev => ({
                   ...prev,
-                  quantityRejected: Number(e.target.value),
+                  // quantityRejected: Number(e.target.value),
+                  quantityRejected: e.target.value === '' ? '' : Number(e.target.value),
                 }))
               }
             />
@@ -475,7 +504,7 @@ const submit = async () => {
 
 
 {/* Rejection Remarks */}
-{formData.isCounted && formData.quantityRejected > 0 && (
+{formData.isCounted && Number(formData.quantityRejected || 0) > 0 && (
   <div className="space-y-2">
     <Label>Rejection Remarks *</Label>
     <Textarea

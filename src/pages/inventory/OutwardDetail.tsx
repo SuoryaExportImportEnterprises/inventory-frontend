@@ -39,10 +39,10 @@ export default function OutwardDetail() {
   const [editQuantity, setEditQuantity] = useState(0);
   const [editRemarks, setEditRemarks] = useState("");
   const [vendors, setVendors] = useState([]);
-const [editVendor, setEditVendor] = useState("");
-const [editUnit, setEditUnit] = useState("");
-const [editColor, setEditColor] = useState("");
-const [editDate, setEditDate] = useState("");
+  const [editVendor, setEditVendor] = useState("");
+  const [editUnit, setEditUnit] = useState("");
+  const [editColor, setEditColor] = useState("");
+  const [editDate, setEditDate] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -334,10 +334,10 @@ const [editDate, setEditDate] = useState("");
           const res = await adminUpdateOutward(data._id, {
             quantity: editQuantity,
             remarks: editRemarks,
-vendor: editVendor || undefined,
-unit: editUnit || undefined,
-color: editColor || undefined,
-outwardDate: editDate || undefined,
+            vendor: editVendor || undefined,
+            unit: editUnit || undefined,
+            color: editColor || undefined,
+            outwardDate: editDate || undefined,
           });
 
           setData(res.data); // 🔥 IMPORTANT
